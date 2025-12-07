@@ -1,21 +1,18 @@
-FROM python:3.11
+# Use a lightweight Nginx image
+FROM nginx:alpine
 
-WORKDIR /app/backend
+# Remove the default Nginx configuration
+RUN rm /etc/nginx/conf.d/default.conf
 
-COPY requirements.txt /app/backend
-RUN apt-get update \
-    && apt-get upgrade -y \
-    && apt-get install -y gcc default-libmysqlclient-dev pkg-config \
-    && rm -rf /var/lib/apt/lists/*
+# (Optional) Add a custom Nginx config if you have one, 
+# otherwise Nginx uses its internal defaults which work fine for simple HTML.
 
+# Copy your website files to the Nginx web root
+# We copy everything (.) to the html folder
+COPY . /usr/share/nginx/html
 
-# Install app dependencies
-RUN pip install mysqlclient
-RUN pip install --no-cache-dir -r requirements.txt
+# Expose port 80 to the outside world
+EXPOSE 80
 
-COPY . /app/backend
-
-EXPOSE 8000
-#RUN python manage.py migrate
-#RUN python manage.py makemigrations
-CMD python /app/backend/manage.py runserver 0.0.0.0:8000
+# Start Nginx when the container launches
+CMD ["nginx", "-g", "daemon off;"]
