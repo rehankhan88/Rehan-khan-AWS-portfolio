@@ -12,7 +12,7 @@ RUN rm /etc/nginx/conf.d/default.conf
 COPY . /usr/share/nginx/html
 
 # Expose port 80 to the outside world
-EXPOSE 800
+EXPOSE 80
 
 # Start Nginx when the container launches
 CMD ["nginx", "-g", "daemon off;"]
